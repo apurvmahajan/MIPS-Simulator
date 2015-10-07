@@ -1,11 +1,20 @@
+//
+//	“On my honor, I have neither given nor received unauthorized aid on this assignment
+//
+//	Name: Apurv Mahajan
+//	Project 1 - MIPS Simulator
+//	
+//
+
 package mips;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
 public class MIPSsim {
-	static int d = 0;
+	static int d = -1;
 	static int instrNum = 0;
 	static int dataCntr = -1;
 	static int cycle = 0;
@@ -16,56 +25,68 @@ public class MIPSsim {
 	static String[] instrLine = new String[1000];
 	
 	public static void main(String args[]){
+		String fileName = args[0];
+		File file = new File("");
+		String currentDirectory = file.getAbsolutePath();
+		File disassemblyFile = new File("disassembly.txt");
+		File simulationFile = new File("simulation.txt");		
 		BufferedReader br = null;
 		try {
 			long data;
 			String readLine;
 			String instrCategory;
-			br = new BufferedReader(new FileReader("E:\\Data\\sample.txt"));
+			br = new BufferedReader(new FileReader(currentDirectory + "\\" + fileName));
 			while((readLine = br.readLine()) != null){
 				posCntr += 4;
+				instrLine[instrNum] = readLine;
+				instrNum++;
 				if(instrFlag){
-					instrLine[instrNum] = readLine;
-					instrNum++;
 					if (readLine.compareTo("00011000000000000000000000000000") == 0)
 						instrFlag = false;
 				}
 				else {
-					if (dataCntr == -1) dataCntr = posCntr;
-					//System.out.println(readLine);
+					if (dataCntr == -1)
+						dataCntr = posCntr;
 					data = Long.parseLong(readLine, 2);
-					if (data > 2147483647){
+					if (data > 2147483647)
 						data = data - 4294967296l;
-					}
-					dataArr[d] = (int) data;
-					d++;
-					//System.out.format("%32s%5d%n", readLine, data);
+					dataArr[++d] = (int) data;
 				}
 			}
+			posCntr = 252;
 			for(int i=0; i<instrNum; i++){
+				posCntr += 4;
 				readLine = instrLine[i];
 				instrCategory = readLine.substring(0, 3);
 				//opCode = mipsInstr.substring(3, 6);
 				//System.out.println(instrCategory + "\t" + opCode);
-				switch (instrCategory) {
-					case "000":
-						processCategoryOne(posCntr, readLine);
-						break;
-					case "001":
-						processCategoryTwo(posCntr, readLine);
-						break;
-					case "010":
-						processCategoryThree(posCntr, readLine);
-						break;
-					case "011":
-						processCategoryFour(posCntr, readLine);
-						break;					
-					case "100":
-						processCategoryFive(posCntr, readLine);					
-						break;					
-					default:
-						System.out.println(readLine + " : Invalid Instruction");
-						break;				
+				if (posCntr < dataCntr){
+					switch (instrCategory) {
+						case "000":
+							processCategoryOne(posCntr, readLine);
+							break;
+						case "001":
+							processCategoryTwo(posCntr, readLine);
+							break;
+						case "010":
+							processCategoryThree(posCntr, readLine);
+							break;
+						case "011":
+							processCategoryFour(posCntr, readLine);
+							break;					
+						case "100":
+							processCategoryFive(posCntr, readLine);					
+							break;					
+						default:
+							System.out.println(readLine + " : Invalid Instruction");
+							break;				
+					}
+				}
+				else {
+					data = Long.parseLong(readLine, 2);
+					if (data > 2147483647)
+						data = data - 4294967296l;
+					System.out.format("%-34s%-5d%-20d%n", readLine, posCntr, data);
 				}
 			}
 		}
@@ -120,33 +141,34 @@ public class MIPSsim {
 		String instrName = "";
 		switch (opCode) {
 		case "000":
-			instrName = "J";
+			instrName = "J ";
 			break;
 		case "001":
-			instrName = "BEQ";
+			instrName = "BEQ ";
 			break;
 		case "010":
-			instrName = "BNE";
+			instrName = "BNE ";
 			break;
 		case "011":
-			instrName = "BGTZ";
+			instrName = "BGTZ ";
 			break;
 		case "100":
-			instrName = "SW";
+			instrName = "SW ";
 			break;
 		case "101":
-			instrName = "LW";
+			instrName = "LW ";
 			break;
 		case "110":
-			instrName = "BREAK";
+			instrName = "BREAK ";
 			instrFlag = false;
 			break;
 		default:
 			System.out.println(mipsInstr + " : Invalid OPCODE for Category 1");			
 			break;
 		}
-		//System.out.format("%32s%5d%5s%32s%n", mipsInstr, posCntr, instrName, bits);
-		printState(mipsInstr, instrName);
+		//instrName += dest + ", " + src1 + ", " + src2;
+		System.out.format("%-34s%-5d%-20s%n", mipsInstr, posCntr, instrName);
+		//printState(mipsInstr, instrName);
 	}
 
 	private static void processCategoryTwo(int posCntr, String mipsInstr) {
@@ -184,8 +206,8 @@ public class MIPSsim {
 			break;
 		}		
 		instrName += dest + ", " + src1 + ", " + src2;
-		//System.out.format("%32s%5d%5s%5s%5s%5s%n", mipsInstr, posCntr, instrName, dest, src1, src2);
-		printState(mipsInstr, instrName);
+		System.out.format("%-34s%-5d%-20s%n", mipsInstr, posCntr, instrName);
+		//printState(mipsInstr, instrName);
 	}
 
 	private static void processCategoryThree(int posCntr, String mipsInstr) {
@@ -198,20 +220,21 @@ public class MIPSsim {
 		String instrName = "";
 		switch (opCode) {
 		case "000":
-			instrName = "ADDI";
+			instrName = "ADDI ";
 			break;
 		case "001":
-			instrName = "ANDI";
+			instrName = "ANDI ";
 			break;
 		case "010":
-			instrName = "ORI";
+			instrName = "ORI ";
 			break;
 		default:
 			System.out.println(mipsInstr + " : Invalid OPCODE for Category 3");			
 			break;
-		}		
-		//System.out.format("%32s%5d%5s%5s%5s%5s%n", mipsInstr, posCntr, instrName, dest, src1, data);
-		printState(mipsInstr, instrName);
+		}
+		instrName += dest + ", " + src1 + ", " + data;
+		System.out.format("%-34s%-5d%-20s%n", mipsInstr, posCntr, instrName);
+		//printState(mipsInstr, instrName);
 	}
 
 	private static void processCategoryFour(int posCntr, String mipsInstr) {
@@ -220,42 +243,44 @@ public class MIPSsim {
 		String opCode = mipsInstr.substring(3, 6);
 		String src1 = "R" + Integer.parseInt(mipsInstr.substring(6, 11), 2);
 		String src2 = "R" + Integer.parseInt(mipsInstr.substring(11, 16), 2);
-		String data = "#" + Integer.parseInt(mipsInstr.substring(16), 2);
+		//String data = "#" + Integer.parseInt(mipsInstr.substring(16), 2);
 		String instrName = "";
 		switch (opCode) {
 		case "000":
-			instrName = "MULT";
+			instrName = "MULT ";
 			break;
 		case "001":
-			instrName = "DIV";
+			instrName = "DIV ";
 			break;
 		default:
 			System.out.println(mipsInstr + " : Invalid OPCODE for Category 4");			
 			break;
 		}		
-		//System.out.format("%32s%5d%5s%5s%5s%n", mipsInstr, posCntr, instrName, src1, src2);
-		printState(mipsInstr, instrName);
+		instrName += src1 + ", " + src2;// + ", " + data;
+		System.out.format("%-34s%-5d%-20s%n", mipsInstr, posCntr, instrName);
+		//printState(mipsInstr, instrName);
 	}
 
 	private static void processCategoryFive(int posCntr, String mipsInstr) {
 		// Format of Instructions in Category-5
 		String instrCategory = mipsInstr.substring(0, 3);
 		String opCode = mipsInstr.substring(3, 6);
-		String dest = mipsInstr.substring(6, 11);
+		String dest = "R" + Integer.parseInt(mipsInstr.substring(6, 11), 2);
 		String bits = mipsInstr.substring(11);
 		String instrName = "";
 		switch (opCode) {
 		case "000":
-			instrName = "MFHI";
+			instrName = "MFHI ";
 			break;
 		case "001":
-			instrName = "MFLO";
+			instrName = "MFLO ";
 			break;
 		default:
 			System.out.println(mipsInstr + " : Invalid OPCODE for Category 5");			
 			break;
-		}		
-		//System.out.format("%32s%5d%5s%5s%n", mipsInstr, posCntr, instrName, dest);
-		printState(mipsInstr, instrName);
+		}
+		instrName += dest;// + ", ";
+		System.out.format("%-34s%-5d%-20s%n", mipsInstr, posCntr, instrName);
+		//printState(mipsInstr, instrName);
 	}
 }

@@ -9,9 +9,12 @@
 package mips;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Formatter;
 import java.util.HashMap;
 
 public class MIPSsim {
@@ -34,14 +37,20 @@ public class MIPSsim {
 		String fileName = args[0];
 		File file = new File("");
 		String currentDirectory = file.getAbsolutePath();
-		//Create output files
-		File disassemblyFile = new File("disassembly.txt");
-		File simulationFile = new File("simulation.txt");		
-		
-		//Read input data
 		BufferedReader br = null;
 		try {
+			//Create output files
+			File disassemblyFile = new File("disassembly.txt");
+			File simulationFile = new File("simulation.txt");
+			if (!disassemblyFile.exists()) {
+				disassemblyFile.createNewFile();
+			}
+			if (!simulationFile.exists()) {
+				simulationFile.createNewFile();
+			}
 			br = new BufferedReader(new FileReader(currentDirectory + "\\" + fileName));
+			FileWriter fw1 = new FileWriter(disassemblyFile.getAbsoluteFile());
+			BufferedWriter bw1 = new BufferedWriter(fw1);
 			//Save data and instructions in HashMap
 			int posCntr = 256;
 			while((nextInstr = br.readLine()) != null){
@@ -53,20 +62,24 @@ public class MIPSsim {
 			while(hm.containsKey(posCntr)){
 				nextInstr = hm.get(posCntr);
 				if(instrFlag){
-					System.out.println(nextInstr + "\t" + posCntr + "\t" + disassembleInstruction(posCntr, nextInstr));
+					bw1.write(nextInstr + "\t" + posCntr + "\t" + disassembleInstruction(posCntr, nextInstr) + "\n");
 					if (nextInstr.compareTo("00011000000000000000000000000000") == 0)
 						instrFlag = false;
 					}
 				else {
+					//Read input data
 					data = Long.parseLong(nextInstr, 2);
 					if (data > 2147483647)
 						data = data - 4294967296l;
 					dataMap.put(posCntr, (int) data);
-					System.out.println(nextInstr +"\t" + posCntr +"\t" + data);
+					bw1.write(nextInstr +"\t" + posCntr +"\t" + data + "\n");
 					}
 				posCntr += 4;
 			}
+			bw1.close();
 			//Start reading instructions and executing them
+			FileWriter fw2 = new FileWriter(simulationFile.getAbsoluteFile());
+			BufferedWriter bw2 = new BufferedWriter(fw2);
 			posCntr = 256;
 			instrFlag = true;
 			int i = 0;
@@ -96,10 +109,11 @@ public class MIPSsim {
 							System.out.println(nextInstr + " : Invalid Instruction");
 							break;				
 					}
-					printState(posCntr, nextInstr, disassembleInstruction(posCntr, nextInstr));
+					printState(posCntr, nextInstr, disassembleInstruction(posCntr, nextInstr), bw2);
 					if (posCntr == nextCntr) 
 						nextCntr += 4;
 				}
+			bw2.close();
 		}
 		catch (IOException e){
 			e.printStackTrace();
@@ -116,32 +130,35 @@ public class MIPSsim {
 	}	
 
 
-	private static void printState(int posCntr, String instr, String instrName) {
+	private static void printState(int posCntr, String instr, String instrName, BufferedWriter bw) {
 		cycle++;
-		System.out.println("--------------------");
-		System.out.println("Cycle " + cycle + ":\t" + posCntr + "\t" + instrName + "\n");
-		System.out.print("Registers");
-		for(int i=0; i<32; i++){
-			if (i%8 == 0){
-				System.out.println();
-				System.out.format("R%02d:", i);
+		try {
+			bw.write("--------------------\n");
+			bw.write("Cycle " + cycle + ":\t" + posCntr + "\t" + instrName + "\n");
+			bw.write("\nRegisters");
+			for(int i=0; i<32; i++){
+				if (i%8 == 0){
+					bw.write("\n");
+					bw.write(String.format("R%02d:", i));
+				}
+				bw.write("\t" + regArr[i]);
 			}
-			System.out.print("\t" + regArr[i]);
-		}
-		System.out.println();
-		System.out.println();
-		System.out.print("Data");
-		int dataReg = 316;
-		for(int i=0; i<16; i++){
-			if (i%8 == 0){
-				System.out.println();
-				System.out.format("%03d:", dataReg);
+			bw.write("\n\n");
+			bw.write("Data");
+			int dataReg = 316;
+			for(int i=0; i<16; i++){
+				if (i%8 == 0){
+					bw.write("\n");
+					bw.write(String.format("%03d:", dataReg));
+				}
+				bw.write("\t" + dataMap.get(dataReg));
+				dataReg += 4;
 			}
-			System.out.print("\t" + dataMap.get(dataReg));
-			dataReg += 4;
+			bw.write("\n\n");	
 		}
-		System.out.println();
-		System.out.println();
+		catch (IOException e){
+			e.printStackTrace();
+		}
 	}	
 	
 	
@@ -192,7 +209,7 @@ public class MIPSsim {
 						instrName += src2 + ", " + (offset >> 2)+ "(" + src1 + ")";
 						break;
 					case "110":
-						instrName = "BREAK ";
+						instrName = "BREAK";
 						instrFlag = false;
 						break;
 				}			

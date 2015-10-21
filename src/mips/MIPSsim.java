@@ -6,7 +6,7 @@
 //	
 //
 
-package mips;
+//package mips;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -48,7 +48,7 @@ public class MIPSsim {
 			if (!simulationFile.exists()) {
 				simulationFile.createNewFile();
 			}
-			br = new BufferedReader(new FileReader(currentDirectory + "\\" + fileName));
+			br = new BufferedReader(new FileReader(currentDirectory + "/" + fileName));
 			FileWriter fw1 = new FileWriter(disassemblyFile.getAbsoluteFile());
 			BufferedWriter bw1 = new BufferedWriter(fw1);
 			//Save data and instructions in HashMap
@@ -68,6 +68,8 @@ public class MIPSsim {
 					}
 				else {
 					//Read input data
+					if (dataCntr == -1)
+						dataCntr = posCntr;
 					data = Long.parseLong(nextInstr, 2);
 					if (data > 2147483647)
 						data = data - 4294967296l;
@@ -145,7 +147,7 @@ public class MIPSsim {
 			}
 			bw.write("\n\n");
 			bw.write("Data");
-			int dataReg = 316;
+			int dataReg = dataCntr;
 			for(int i=0; i<16; i++){
 				if (i%8 == 0){
 					bw.write("\n");
@@ -237,12 +239,12 @@ public class MIPSsim {
 					case "100":
 						instrName += "SRL ";
 						src2 = "" + Integer.parseInt(mipsInstr.substring(16, 21), 2);
-						instrName += dest + ", " + src1 + ", " + src2;
+						instrName += dest + ", " + src1 + ", #" + src2;
 						return instrName;
 					case "101":
 						instrName += "SRA ";
 						src2 = "" + Integer.parseInt(mipsInstr.substring(16, 21), 2);
-						instrName += dest + ", " + src1 + ", " + src2;
+						instrName += dest + ", " + src1 + ", #" + src2;
 						return instrName;
 				}
 				instrName += dest + ", " + src1 + ", " + src2;

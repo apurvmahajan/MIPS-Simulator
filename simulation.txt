@@ -3775,7 +3775,7 @@ Cycle 83:
 
 IF:
 	Waiting:
-	Executed:
+	Executed: [BREAK]
 Buf1:
 	Entry 0:
 	Entry 1:

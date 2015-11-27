@@ -170,13 +170,13 @@ public class MIPSsim {
 					}
 				}
 				if(buf6 != null){
-					System.out.println("Load/Store:: " + disassembleInstruction(buf6) + "\t" + buf6);
+					//System.out.println("Load/Store:: " + disassembleInstruction(buf6) + "\t" + buf6);
 					if(buf6.substring(0, 6).equals("000100")){
-						System.out.println("Store:: " + disassembleInstruction(buf6) + "\t" + buf6);
+						//System.out.println("Store:: " + disassembleInstruction(buf6) + "\t" + buf6);
 						writeBack.add(buf6);
 					}
 					else if (buf6.substring(0, 6).equals("000101")){
-						System.out.println("Load:: " + disassembleInstruction(buf6) + "\t" + buf6);
+						//System.out.println("Load:: " + disassembleInstruction(buf6) + "\t" + buf6);
 						buf10 = buf6;
 					}
 					buf6 = null;						
@@ -221,8 +221,10 @@ public class MIPSsim {
 						}
 						else if(instrType.equals("011001")){
 							// Div Instruction
+							divIssued = true;
 							if(!bufFull3 && buf3.size() < 2 && loUsed == false && executeInstruction(bufInstr, false)){
 								loUsed = true;
+								hiUsed = true;
 								buf3.add(bufInstr);
 								it.remove();
 							}
@@ -246,12 +248,12 @@ public class MIPSsim {
 					}
 				}
 				if(instrFetch != null && instrFetch.substring(0, 6).equals("000000")){
-					System.out.println("JUMP" + posCntr);
+					//System.out.println("JUMP" + posCntr);
 					instrFetch = null;
 					ifExecuted = false;
 					ifWait = false;
 				}
-				if(instrFetch != null && regRead.size() == 0 && regWrite.size() == 0){
+				if(instrFetch != null){
 					/*String bits = instrFetch.substring(6);
 					String opCode = instrFetch.substring(3, 6);
 					int src1 = Integer.parseInt(bits.substring(0, 5), 2);
@@ -261,24 +263,26 @@ public class MIPSsim {
 							|| (!opCode.equals("011") && !regRead.contains(src1) && !regRead.contains(src2)){
 						
 					}*/
-					posCntr = processCategoryJumps(posCntr, instrFetch);
-					//System.out.println("Category Jump:: " + instrFetch + "\tposCntr: " + posCntr + "\tnextPosCntr: " + nextPosCntr);
-					if(posCntr == -1){
-						posCntr = nextPosCntr;
-						ifWait = true;	
-					}
-					else {
-						if(ifExecuted){
-							ifWait = false;
-							instrFetch = null;
-							if (posCntr == nextPosCntr)
-								nextPosCntr += 4;
-							else
-								nextPosCntr = posCntr;
+					if (regRead.size() == 0 && regWrite.size() == 0) {
+						posCntr = processCategoryJumps(posCntr, instrFetch);
+						//System.out.println("Category Jump:: " + instrFetch + "\tposCntr: " + posCntr + "\tnextPosCntr: " + nextPosCntr);
+						if(posCntr == -1){
+							posCntr = nextPosCntr;
+							ifWait = true;	
 						}
 						else {
-							posCntr = nextPosCntr;
-							ifExecuted = true;
+							if(ifExecuted){
+								ifWait = false;
+								instrFetch = null;
+								if (posCntr == nextPosCntr)
+									nextPosCntr += 4;
+								else
+									nextPosCntr = posCntr;
+							}
+							else {
+								posCntr = nextPosCntr;
+								ifExecuted = true;
+							}
 						}
 					}
 				}
@@ -286,9 +290,11 @@ public class MIPSsim {
 				while(ifCount < 4 && buf1.size() < 8 && ifWait == false){
 					posCntr = nextPosCntr;
 					nextInstr = hm.get(posCntr);
-					System.out.println(posCntr + "\t\t" + nextInstr + "\t\t" + disassembleInstruction(nextInstr));
+					//System.out.println(posCntr + "\t\t" + nextInstr + "\t\t" + disassembleInstruction(nextInstr));
 					if(nextInstr.compareTo("00011000000000000000000000000000") == 0){
 						instrFetch = nextInstr;
+						ifWait = true;
+						ifExecuted = true;
 						nextPosCntr = dataCntr;
 						break;
 					}
@@ -437,7 +443,7 @@ public class MIPSsim {
 				// LW
 				if (execute){
 					regArr[src2] = dataMap.get((offset >> 2)+ regArr[src1]);
-					System.out.println("Load:: "+ mipsInstr + "\t" + src2 + "\t" + regArr[src2] + "\t" + ((offset >> 2) + regArr[src1]));
+					//System.out.println("Load:: "+ mipsInstr + "\t" + src2 + "\t" + regArr[src2] + "\t" + ((offset >> 2) + regArr[src1]));
 					regRead.remove(src1);
 					regWrite.remove(src2);
 				}
@@ -658,6 +664,7 @@ public class MIPSsim {
 					regRead.remove(src2);
 					loUsed = false;
 					hiUsed = false;
+					divIssued = false;
 				}
 				else {
 					if (regWrite.contains(src1) || regWrite.contains(src2) || loUsed == true || hiUsed == true)
@@ -689,7 +696,8 @@ public class MIPSsim {
 					regWrite.remove(dest);
 				}
 				else {
-					if (regRead.contains(dest) || regWrite.contains(dest) || hiUsed == true)
+					if (regRead.contains(dest) || regWrite.contains(dest) || hiUsed == true
+							  || divIssued == true)
 						return false;
 					regWrite.add(dest);
 					hiUsed = true;
@@ -705,7 +713,8 @@ public class MIPSsim {
 					regWrite.remove(dest);
 				}
 				else {
-					if (regRead.contains(dest) || regWrite.contains(dest) || loUsed == true || mulIssued == true)
+					if (regRead.contains(dest) || regWrite.contains(dest) || loUsed == true 
+							|| mulIssued == true  || divIssued == true)
 						return false;
 					regWrite.add(dest);
 					loUsed = true;
@@ -847,6 +856,7 @@ public class MIPSsim {
 			//bw.write("\nRead : " + regRead.toString());	
 			//bw.write("\nWrite: " + regWrite.toString());
 			bw.write("\n");
+			bw.flush();
 		}
 		catch (IOException e){
 			e.printStackTrace();

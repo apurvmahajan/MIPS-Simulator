@@ -28,6 +28,7 @@ public class MIPSsim {
 	private static boolean mulIssued = false;
 	private static boolean divIssued = false;
 	private static boolean ifWait = false;			//True = Waiting || False = Executed
+	private static boolean ifExecuted = false;
 	private static String instrFetch = null;
 	
 	private static ArrayList<String> buf1 = new ArrayList<String>(8);
@@ -44,6 +45,7 @@ public class MIPSsim {
 	private static String buf11 = null;
 	private static String buf12 = null;
 	private static String divInstr = null;
+	private static String loadMem = null;
 	//private static boolean[] clearBuf = new boolean[13];
 	
 	private static ArrayList<String> writeBack = new ArrayList<String>(8);
@@ -125,7 +127,6 @@ public class MIPSsim {
 			nextPosCntr = posCntr = 256;
 			
 			//**************** Start Execution Cycle ****************
-			
 			while(nextPosCntr < dataCntr){
 				boolean bufFull2 = false;
 				boolean bufFull3 = false;
@@ -142,8 +143,12 @@ public class MIPSsim {
 					buf11 = null;
 				}
 				if(buf10 != null){
-					writeBack.add(buf10);
-					buf10 = null;						
+					loadMem = buf10;
+					buf10 = null;	
+				}
+				if(loadMem != null){
+					writeBack.add(loadMem);
+					loadMem = null;
 				}
 				if(buf9 != null){
 					writeBack.add(buf9);
@@ -165,10 +170,13 @@ public class MIPSsim {
 					}
 				}
 				if(buf6 != null){
+					System.out.println("Load/Store:: " + disassembleInstruction(buf6) + "\t" + buf6);
 					if(buf6.substring(0, 6).equals("000100")){
+						System.out.println("Store:: " + disassembleInstruction(buf6) + "\t" + buf6);
 						writeBack.add(buf6);
 					}
-					else{
+					else if (buf6.substring(0, 6).equals("000101")){
+						System.out.println("Load:: " + disassembleInstruction(buf6) + "\t" + buf6);
 						buf10 = buf6;
 					}
 					buf6 = null;						
@@ -237,7 +245,22 @@ public class MIPSsim {
 						}
 					}
 				}
-				if(ifWait == true && regRead.size() == 0 && regWrite.size() == 0){
+				if(instrFetch != null && instrFetch.substring(0, 6).equals("000000")){
+					System.out.println("JUMP" + posCntr);
+					instrFetch = null;
+					ifExecuted = false;
+					ifWait = false;
+				}
+				if(instrFetch != null && regRead.size() == 0 && regWrite.size() == 0){
+					/*String bits = instrFetch.substring(6);
+					String opCode = instrFetch.substring(3, 6);
+					int src1 = Integer.parseInt(bits.substring(0, 5), 2);
+					int src2 = Integer.parseInt(bits.substring(5, 10), 2);
+					int offset = Integer.parseInt(bits.substring(10), 2) << 2;
+					if ((opCode.equals("011") && !regRead.contains(src1))
+							|| (!opCode.equals("011") && !regRead.contains(src1) && !regRead.contains(src2)){
+						
+					}*/
 					posCntr = processCategoryJumps(posCntr, instrFetch);
 					//System.out.println("Category Jump:: " + instrFetch + "\tposCntr: " + posCntr + "\tnextPosCntr: " + nextPosCntr);
 					if(posCntr == -1){
@@ -245,14 +268,19 @@ public class MIPSsim {
 						ifWait = true;	
 					}
 					else {
-						ifWait = false;
-						instrFetch = null;
-						if (posCntr == nextPosCntr)
-							nextPosCntr += 4;
-						else
-							nextPosCntr = posCntr;
+						if(ifExecuted){
+							ifWait = false;
+							instrFetch = null;
+							if (posCntr == nextPosCntr)
+								nextPosCntr += 4;
+							else
+								nextPosCntr = posCntr;
+						}
+						else {
+							posCntr = nextPosCntr;
+							ifExecuted = true;
+						}
 					}
-					continue;
 				}
 				ifCount = 0;
 				while(ifCount < 4 && buf1.size() < 8 && ifWait == false){
@@ -267,6 +295,13 @@ public class MIPSsim {
 					if(nextInstr.substring(0, 4).equals("0000")){
 						instrFetch = nextInstr;
 						ifWait = true;
+						if(instrFetch.substring(0, 6).equals("000000")){
+							//System.out.println("JUMP");
+							nextPosCntr = processCategoryJumps(posCntr, instrFetch);
+							ifExecuted = true;
+						}
+						else
+							ifExecuted = false;
 						break;
 					}
 					buf1.add(nextInstr);
@@ -384,12 +419,10 @@ public class MIPSsim {
 			case "100":
 				// SW
 				if (execute){
-					System.out.println("Store -- DataMap: " + ((offset >> 2) + regArr[src1]) + "\toffset " + src1 + "\t" + regArr[src1] + "\tReg " + src2 + "\tRegVal " + regArr[src2]);
+					//System.out.println("Store -- DataMap: " + ((offset >> 2) + regArr[src1]) + "\toffset " + src1 + "\t" + regArr[src1] + "\tReg " + src2 + "\tRegVal " + regArr[src2]);
 					dataMap.put((offset >> 2) + regArr[src1], regArr[src2]);
 					regRead.remove(src1);
 					regRead.remove(src2);
-					regOrder.remove(src1);
-					regOrder.remove(src2);
 				}
 				else {
 					regOrder.add(src1);
@@ -404,12 +437,12 @@ public class MIPSsim {
 				// LW
 				if (execute){
 					regArr[src2] = dataMap.get((offset >> 2)+ regArr[src1]);
-					//System.out.println("Load:: "+ mipsInstr + "\t" + src2 + "\t" + regArr[src2] + "\t" + ((offset >> 2) + regArr[src1]));
+					System.out.println("Load:: "+ mipsInstr + "\t" + src2 + "\t" + regArr[src2] + "\t" + ((offset >> 2) + regArr[src1]));
 					regRead.remove(src1);
 					regWrite.remove(src2);
 				}
 				else {
-					if (regRead.contains(src2) || regRead.contains(src1) || regWrite.contains(src2))
+					if (regRead.contains(src2) || regWrite.contains(src2))
 						return false;
 					regRead.add(src1);
 					regWrite.add(src2);
@@ -696,17 +729,19 @@ public class MIPSsim {
 			bw.write("--------------------");
 			bw.write("\nCycle " + cycle + ":");
 			bw.write("\n\nIF:");
-			if(ifWait){
-				bw.write("\n\tWaiting: [" + disassembleInstruction(instrFetch) + "]");				
+			if(!ifWait){
+				bw.write("\n\tWaiting:");			
 				bw.write("\n\tExecuted:");
 			}
 			else {
-				bw.write("\n\tWaiting: ");
-				if (instrFetch != null){
+				if (ifExecuted){
+					bw.write("\n\tWaiting:");
 					bw.write("\n\tExecuted: [" + disassembleInstruction(instrFetch) + "]");
 				}
 				else {
-					bw.write("\n\tExecuted: ");
+					bw.write("\n\tWaiting: [" + disassembleInstruction(instrFetch) + "]");	
+					bw.write("\n\tExecuted:");
+					
 				}
 			}
 			//******************************
@@ -809,10 +844,8 @@ public class MIPSsim {
 				bw.write("\t" + dataMap.get(dataReg));
 				dataReg += 4;
 			}
-			//bw.write("\nRead : ");	
-			//bw.write(regRead.toString());
-			//bw.write("\nWrite: ");
-			//bw.write(regWrite.toString());
+			//bw.write("\nRead : " + regRead.toString());	
+			//bw.write("\nWrite: " + regWrite.toString());
 			bw.write("\n");
 		}
 		catch (IOException e){
@@ -884,11 +917,11 @@ public class MIPSsim {
 			switch (opCode) {
 				case "000":
 					//MFHI
-					result += (LO);
+					result += (HI);
 					break;
 				case "001":
 					//MFLO
-					result += (HI);
+					result += (LO);
 					break;
 			}
 			result += ", R" + dest;

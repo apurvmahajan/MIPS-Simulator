@@ -278,8 +278,54 @@ Data
 Cycle 7:
 
 IF:
-	Waiting: 
-	Executed: 
+	Waiting:
+	Executed: [BEQ R1, R2, #40]
+Buf1:
+	Entry 0:
+	Entry 1:
+	Entry 2:
+	Entry 3:
+	Entry 4:
+	Entry 5:
+	Entry 6:
+	Entry 7:
+Buf2:
+	Entry 0:
+	Entry 1:
+Buf3:
+	Entry 0:
+	Entry 1:
+Buf4:
+	Entry 0:
+	Entry 1:
+Buf5:
+	Entry 0:
+	Entry 1:
+Buf6:
+Buf7:
+Buf8:
+Buf9:
+Buf10:
+Buf11:
+Buf12:
+
+Registers
+R00:	0	0	3	0	0	0	0	0
+R08:	0	0	0	0	0	0	0	0
+R16:	0	0	0	0	0	0	0	0
+R24:	0	0	0	0	0	0	0	0
+HI:	0
+LO:	0
+
+Data
+316:	-1	-2	-3	1	2	4	-4	10
+348:	7	9	1	0	-1	1	-1	0
+--------------------
+Cycle 8:
+
+IF:
+	Waiting:
+	Executed:
 Buf1:
 	Entry 0: [LW R3, 316(R6)]
 	Entry 1: [LW R4, 332(R6)]
@@ -321,15 +367,15 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	7	9	1	0	-1	1	-1	0
 --------------------
-Cycle 8:
+Cycle 9:
 
 IF:
 	Waiting: [BGTZ R5, #4]
 	Executed:
 Buf1:
-	Entry 0: [LW R4, 332(R6)]
-	Entry 1: [MULT R3, R4]
-	Entry 2: [MFLO R5]
+	Entry 0: [MULT R3, R4]
+	Entry 1: [MFLO R5]
+	Entry 2:
 	Entry 3:
 	Entry 4:
 	Entry 5:
@@ -337,7 +383,7 @@ Buf1:
 	Entry 7:
 Buf2:
 	Entry 0: [LW R3, 316(R6)]
-	Entry 1:
+	Entry 1: [LW R4, 332(R6)]
 Buf3:
 	Entry 0:
 	Entry 1:
@@ -367,22 +413,22 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	7	9	1	0	-1	1	-1	0
 --------------------
-Cycle 9:
+Cycle 10:
 
 IF:
 	Waiting: [BGTZ R5, #4]
 	Executed:
 Buf1:
-	Entry 0: [LW R4, 332(R6)]
-	Entry 1: [MULT R3, R4]
-	Entry 2: [MFLO R5]
+	Entry 0: [MULT R3, R4]
+	Entry 1: [MFLO R5]
+	Entry 2:
 	Entry 3:
 	Entry 4:
 	Entry 5:
 	Entry 6:
 	Entry 7:
 Buf2:
-	Entry 0:
+	Entry 0: [LW R4, 332(R6)]
 	Entry 1:
 Buf3:
 	Entry 0:
@@ -413,145 +459,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	7	9	1	0	-1	1	-1	0
 --------------------
-Cycle 10:
-
-IF:
-	Waiting: [BGTZ R5, #4]
-	Executed:
-Buf1:
-	Entry 0: [LW R4, 332(R6)]
-	Entry 1: [MULT R3, R4]
-	Entry 2: [MFLO R5]
-	Entry 3:
-	Entry 4:
-	Entry 5:
-	Entry 6:
-	Entry 7:
-Buf2:
-	Entry 0:
-	Entry 1:
-Buf3:
-	Entry 0:
-	Entry 1:
-Buf4:
-	Entry 0:
-	Entry 1:
-Buf5:
-	Entry 0:
-	Entry 1:
-Buf6:
-Buf7:
-Buf8:
-Buf9:
-Buf10: [-1, R3]
-Buf11:
-Buf12:
-
-Registers
-R00:	0	0	3	-1	0	0	0	0
-R08:	0	0	0	0	0	0	0	0
-R16:	0	0	0	0	0	0	0	0
-R24:	0	0	0	0	0	0	0	0
-HI:	0
-LO:	0
-
-Data
-316:	-1	-2	-3	1	2	4	-4	10
-348:	7	9	1	0	-1	1	-1	0
---------------------
 Cycle 11:
-
-IF:
-	Waiting: [BGTZ R5, #4]
-	Executed:
-Buf1:
-	Entry 0: [LW R4, 332(R6)]
-	Entry 1: [MULT R3, R4]
-	Entry 2: [MFLO R5]
-	Entry 3:
-	Entry 4:
-	Entry 5:
-	Entry 6:
-	Entry 7:
-Buf2:
-	Entry 0:
-	Entry 1:
-Buf3:
-	Entry 0:
-	Entry 1:
-Buf4:
-	Entry 0:
-	Entry 1:
-Buf5:
-	Entry 0:
-	Entry 1:
-Buf6:
-Buf7:
-Buf8:
-Buf9:
-Buf10:
-Buf11:
-Buf12:
-
-Registers
-R00:	0	0	3	-1	0	0	0	0
-R08:	0	0	0	0	0	0	0	0
-R16:	0	0	0	0	0	0	0	0
-R24:	0	0	0	0	0	0	0	0
-HI:	0
-LO:	0
-
-Data
-316:	-1	-2	-3	1	2	4	-4	10
-348:	7	9	1	0	-1	1	-1	0
---------------------
-Cycle 12:
-
-IF:
-	Waiting: [BGTZ R5, #4]
-	Executed:
-Buf1:
-	Entry 0: [MULT R3, R4]
-	Entry 1: [MFLO R5]
-	Entry 2:
-	Entry 3:
-	Entry 4:
-	Entry 5:
-	Entry 6:
-	Entry 7:
-Buf2:
-	Entry 0: [LW R4, 332(R6)]
-	Entry 1:
-Buf3:
-	Entry 0:
-	Entry 1:
-Buf4:
-	Entry 0:
-	Entry 1:
-Buf5:
-	Entry 0:
-	Entry 1:
-Buf6:
-Buf7:
-Buf8:
-Buf9:
-Buf10:
-Buf11:
-Buf12:
-
-Registers
-R00:	0	0	3	-1	0	0	0	0
-R08:	0	0	0	0	0	0	0	0
-R16:	0	0	0	0	0	0	0	0
-R24:	0	0	0	0	0	0	0	0
-HI:	0
-LO:	0
-
-Data
-316:	-1	-2	-3	1	2	4	-4	10
-348:	7	9	1	0	-1	1	-1	0
---------------------
-Cycle 13:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -581,7 +489,7 @@ Buf6: [LW R4, 332(R6)]
 Buf7:
 Buf8:
 Buf9:
-Buf10:
+Buf10: [-1, R3]
 Buf11:
 Buf12:
 
@@ -597,7 +505,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	7	9	1	0	-1	1	-1	0
 --------------------
-Cycle 14:
+Cycle 12:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -643,7 +551,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	7	9	1	0	-1	1	-1	0
 --------------------
-Cycle 15:
+Cycle 13:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -689,7 +597,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	7	9	1	0	-1	1	-1	0
 --------------------
-Cycle 16:
+Cycle 14:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -735,7 +643,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	7	9	1	0	-1	1	-1	0
 --------------------
-Cycle 17:
+Cycle 15:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -781,7 +689,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	7	9	1	0	-1	1	-1	0
 --------------------
-Cycle 18:
+Cycle 16:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -827,7 +735,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	7	9	1	0	-1	1	-1	0
 --------------------
-Cycle 19:
+Cycle 17:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -873,7 +781,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	7	9	1	0	-1	1	-1	0
 --------------------
-Cycle 20:
+Cycle 18:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -903,6 +811,98 @@ Buf6:
 Buf7:
 Buf8:
 Buf9:
+Buf10:
+Buf11:
+Buf12:
+
+Registers
+R00:	0	0	3	-1	2	0	0	0
+R08:	0	0	0	0	0	0	0	0
+R16:	0	0	0	0	0	0	0	0
+R24:	0	0	0	0	0	0	0	0
+HI:	0
+LO:	-2
+
+Data
+316:	-1	-2	-3	1	2	4	-4	10
+348:	7	9	1	0	-1	1	-1	0
+--------------------
+Cycle 19:
+
+IF:
+	Waiting: [BGTZ R5, #4]
+	Executed:
+Buf1:
+	Entry 0:
+	Entry 1:
+	Entry 2:
+	Entry 3:
+	Entry 4:
+	Entry 5:
+	Entry 6:
+	Entry 7:
+Buf2:
+	Entry 0:
+	Entry 1:
+Buf3:
+	Entry 0:
+	Entry 1:
+Buf4:
+	Entry 0:
+	Entry 1:
+Buf5:
+	Entry 0: [MFLO R5]
+	Entry 1:
+Buf6:
+Buf7:
+Buf8:
+Buf9:
+Buf10:
+Buf11:
+Buf12:
+
+Registers
+R00:	0	0	3	-1	2	0	0	0
+R08:	0	0	0	0	0	0	0	0
+R16:	0	0	0	0	0	0	0	0
+R24:	0	0	0	0	0	0	0	0
+HI:	0
+LO:	-2
+
+Data
+316:	-1	-2	-3	1	2	4	-4	10
+348:	7	9	1	0	-1	1	-1	0
+--------------------
+Cycle 20:
+
+IF:
+	Waiting: [BGTZ R5, #4]
+	Executed:
+Buf1:
+	Entry 0:
+	Entry 1:
+	Entry 2:
+	Entry 3:
+	Entry 4:
+	Entry 5:
+	Entry 6:
+	Entry 7:
+Buf2:
+	Entry 0:
+	Entry 1:
+Buf3:
+	Entry 0:
+	Entry 1:
+Buf4:
+	Entry 0:
+	Entry 1:
+Buf5:
+	Entry 0:
+	Entry 1:
+Buf6:
+Buf7:
+Buf8:
+Buf9: [-2, R5]
 Buf10:
 Buf11:
 Buf12:
@@ -920,98 +920,6 @@ Data
 348:	7	9	1	0	-1	1	-1	0
 --------------------
 Cycle 21:
-
-IF:
-	Waiting: [BGTZ R5, #4]
-	Executed:
-Buf1:
-	Entry 0:
-	Entry 1:
-	Entry 2:
-	Entry 3:
-	Entry 4:
-	Entry 5:
-	Entry 6:
-	Entry 7:
-Buf2:
-	Entry 0:
-	Entry 1:
-Buf3:
-	Entry 0:
-	Entry 1:
-Buf4:
-	Entry 0:
-	Entry 1:
-Buf5:
-	Entry 0: [MFLO R5]
-	Entry 1:
-Buf6:
-Buf7:
-Buf8:
-Buf9:
-Buf10:
-Buf11:
-Buf12:
-
-Registers
-R00:	0	0	3	-1	2	0	0	0
-R08:	0	0	0	0	0	0	0	0
-R16:	0	0	0	0	0	0	0	0
-R24:	0	0	0	0	0	0	0	0
-HI:	0
-LO:	-2
-
-Data
-316:	-1	-2	-3	1	2	4	-4	10
-348:	7	9	1	0	-1	1	-1	0
---------------------
-Cycle 22:
-
-IF:
-	Waiting: [BGTZ R5, #4]
-	Executed:
-Buf1:
-	Entry 0:
-	Entry 1:
-	Entry 2:
-	Entry 3:
-	Entry 4:
-	Entry 5:
-	Entry 6:
-	Entry 7:
-Buf2:
-	Entry 0:
-	Entry 1:
-Buf3:
-	Entry 0:
-	Entry 1:
-Buf4:
-	Entry 0:
-	Entry 1:
-Buf5:
-	Entry 0:
-	Entry 1:
-Buf6:
-Buf7:
-Buf8:
-Buf9: [0, R5]
-Buf10:
-Buf11:
-Buf12:
-
-Registers
-R00:	0	0	3	-1	2	0	0	0
-R08:	0	0	0	0	0	0	0	0
-R16:	0	0	0	0	0	0	0	0
-R24:	0	0	0	0	0	0	0	0
-HI:	0
-LO:	-2
-
-Data
-316:	-1	-2	-3	1	2	4	-4	10
-348:	7	9	1	0	-1	1	-1	0
---------------------
-Cycle 23:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -1057,11 +965,57 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	7	9	1	0	-1	1	-1	0
 --------------------
-Cycle 24:
+Cycle 22:
 
 IF:
-	Waiting: 
-	Executed: 
+	Waiting:
+	Executed: [BGTZ R5, #4]
+Buf1:
+	Entry 0:
+	Entry 1:
+	Entry 2:
+	Entry 3:
+	Entry 4:
+	Entry 5:
+	Entry 6:
+	Entry 7:
+Buf2:
+	Entry 0:
+	Entry 1:
+Buf3:
+	Entry 0:
+	Entry 1:
+Buf4:
+	Entry 0:
+	Entry 1:
+Buf5:
+	Entry 0:
+	Entry 1:
+Buf6:
+Buf7:
+Buf8:
+Buf9:
+Buf10:
+Buf11:
+Buf12:
+
+Registers
+R00:	0	0	3	-1	2	-2	0	0
+R08:	0	0	0	0	0	0	0	0
+R16:	0	0	0	0	0	0	0	0
+R24:	0	0	0	0	0	0	0	0
+HI:	0
+LO:	-2
+
+Data
+316:	-1	-2	-3	1	2	4	-4	10
+348:	7	9	1	0	-1	1	-1	0
+--------------------
+Cycle 23:
+
+IF:
+	Waiting:
+	Executed:
 Buf1:
 	Entry 0: [ADDI R5, R5, #12]
 	Entry 1: [SW R5, 348(R6)]
@@ -1103,11 +1057,11 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	7	9	1	0	-1	1	-1	0
 --------------------
-Cycle 25:
+Cycle 24:
 
 IF:
-	Waiting: [J #268]
-	Executed:
+	Waiting:
+	Executed: [J #268]
 Buf1:
 	Entry 0: [SW R5, 348(R6)]
 	Entry 1: [ADDI R6, R6, #4]
@@ -1149,10 +1103,10 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	7	9	1	0	-1	1	-1	0
 --------------------
-Cycle 26:
+Cycle 25:
 
 IF:
-	Waiting: [J #268]
+	Waiting: [BEQ R1, R2, #40]
 	Executed:
 Buf1:
 	Entry 0: [SW R5, 348(R6)]
@@ -1195,10 +1149,10 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	7	9	1	0	-1	1	-1	0
 --------------------
-Cycle 27:
+Cycle 26:
 
 IF:
-	Waiting: [J #268]
+	Waiting: [BEQ R1, R2, #40]
 	Executed:
 Buf1:
 	Entry 0: [SW R5, 348(R6)]
@@ -1241,10 +1195,10 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	7	9	1	0	-1	1	-1	0
 --------------------
-Cycle 28:
+Cycle 27:
 
 IF:
-	Waiting: [J #268]
+	Waiting: [BEQ R1, R2, #40]
 	Executed:
 Buf1:
 	Entry 0: [ADDI R6, R6, #4]
@@ -1287,10 +1241,10 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	7	9	1	0	-1	1	-1	0
 --------------------
-Cycle 29:
+Cycle 28:
 
 IF:
-	Waiting: [J #268]
+	Waiting: [BEQ R1, R2, #40]
 	Executed:
 Buf1:
 	Entry 0: [ADDI R6, R6, #4]
@@ -1333,10 +1287,10 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	7	9	1	0	-1	1	-1	0
 --------------------
-Cycle 30:
+Cycle 29:
 
 IF:
-	Waiting: [J #268]
+	Waiting: [BEQ R1, R2, #40]
 	Executed:
 Buf1:
 	Entry 0: [ADDI R6, R6, #4]
@@ -1358,6 +1312,52 @@ Buf4:
 	Entry 1:
 Buf5:
 	Entry 0:
+	Entry 1:
+Buf6:
+Buf7:
+Buf8:
+Buf9:
+Buf10:
+Buf11:
+Buf12:
+
+Registers
+R00:	0	1	3	-1	2	10	0	0
+R08:	0	0	0	0	0	0	0	0
+R16:	0	0	0	0	0	0	0	0
+R24:	0	0	0	0	0	0	0	0
+HI:	0
+LO:	-2
+
+Data
+316:	-1	-2	-3	1	2	4	-4	10
+348:	10	9	1	0	-1	1	-1	0
+--------------------
+Cycle 30:
+
+IF:
+	Waiting: [BEQ R1, R2, #40]
+	Executed:
+Buf1:
+	Entry 0:
+	Entry 1:
+	Entry 2:
+	Entry 3:
+	Entry 4:
+	Entry 5:
+	Entry 6:
+	Entry 7:
+Buf2:
+	Entry 0:
+	Entry 1:
+Buf3:
+	Entry 0:
+	Entry 1:
+Buf4:
+	Entry 0:
+	Entry 1:
+Buf5:
+	Entry 0: [ADDI R6, R6, #4]
 	Entry 1:
 Buf6:
 Buf7:
@@ -1382,53 +1382,7 @@ Data
 Cycle 31:
 
 IF:
-	Waiting: [J #268]
-	Executed:
-Buf1:
-	Entry 0:
-	Entry 1:
-	Entry 2:
-	Entry 3:
-	Entry 4:
-	Entry 5:
-	Entry 6:
-	Entry 7:
-Buf2:
-	Entry 0:
-	Entry 1:
-Buf3:
-	Entry 0:
-	Entry 1:
-Buf4:
-	Entry 0:
-	Entry 1:
-Buf5:
-	Entry 0: [ADDI R6, R6, #4]
-	Entry 1:
-Buf6:
-Buf7:
-Buf8:
-Buf9:
-Buf10:
-Buf11:
-Buf12:
-
-Registers
-R00:	0	1	3	-1	2	10	0	0
-R08:	0	0	0	0	0	0	0	0
-R16:	0	0	0	0	0	0	0	0
-R24:	0	0	0	0	0	0	0	0
-HI:	0
-LO:	-2
-
-Data
-316:	-1	-2	-3	1	2	4	-4	10
-348:	10	9	1	0	-1	1	-1	0
---------------------
-Cycle 32:
-
-IF:
-	Waiting: [J #268]
+	Waiting: [BEQ R1, R2, #40]
 	Executed:
 Buf1:
 	Entry 0:
@@ -1471,53 +1425,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 33:
-
-IF:
-	Waiting: [J #268]
-	Executed:
-Buf1:
-	Entry 0:
-	Entry 1:
-	Entry 2:
-	Entry 3:
-	Entry 4:
-	Entry 5:
-	Entry 6:
-	Entry 7:
-Buf2:
-	Entry 0:
-	Entry 1:
-Buf3:
-	Entry 0:
-	Entry 1:
-Buf4:
-	Entry 0:
-	Entry 1:
-Buf5:
-	Entry 0:
-	Entry 1:
-Buf6:
-Buf7:
-Buf8:
-Buf9:
-Buf10:
-Buf11:
-Buf12:
-
-Registers
-R00:	0	1	3	-1	2	10	4	0
-R08:	0	0	0	0	0	0	0	0
-R16:	0	0	0	0	0	0	0	0
-R24:	0	0	0	0	0	0	0	0
-HI:	0
-LO:	-2
-
-Data
-316:	-1	-2	-3	1	2	4	-4	10
-348:	10	9	1	0	-1	1	-1	0
---------------------
-Cycle 34:
+Cycle 32:
 
 IF:
 	Waiting: [BEQ R1, R2, #40]
@@ -1563,11 +1471,57 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 35:
+Cycle 33:
 
 IF:
-	Waiting: 
-	Executed: 
+	Waiting:
+	Executed: [BEQ R1, R2, #40]
+Buf1:
+	Entry 0:
+	Entry 1:
+	Entry 2:
+	Entry 3:
+	Entry 4:
+	Entry 5:
+	Entry 6:
+	Entry 7:
+Buf2:
+	Entry 0:
+	Entry 1:
+Buf3:
+	Entry 0:
+	Entry 1:
+Buf4:
+	Entry 0:
+	Entry 1:
+Buf5:
+	Entry 0:
+	Entry 1:
+Buf6:
+Buf7:
+Buf8:
+Buf9:
+Buf10:
+Buf11:
+Buf12:
+
+Registers
+R00:	0	1	3	-1	2	10	4	0
+R08:	0	0	0	0	0	0	0	0
+R16:	0	0	0	0	0	0	0	0
+R24:	0	0	0	0	0	0	0	0
+HI:	0
+LO:	-2
+
+Data
+316:	-1	-2	-3	1	2	4	-4	10
+348:	10	9	1	0	-1	1	-1	0
+--------------------
+Cycle 34:
+
+IF:
+	Waiting:
+	Executed:
 Buf1:
 	Entry 0: [LW R3, 316(R6)]
 	Entry 1: [LW R4, 332(R6)]
@@ -1609,15 +1563,15 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 36:
+Cycle 35:
 
 IF:
 	Waiting: [BGTZ R5, #4]
 	Executed:
 Buf1:
-	Entry 0: [LW R4, 332(R6)]
-	Entry 1: [MULT R3, R4]
-	Entry 2: [MFLO R5]
+	Entry 0: [MULT R3, R4]
+	Entry 1: [MFLO R5]
+	Entry 2:
 	Entry 3:
 	Entry 4:
 	Entry 5:
@@ -1625,7 +1579,7 @@ Buf1:
 	Entry 7:
 Buf2:
 	Entry 0: [LW R3, 316(R6)]
-	Entry 1:
+	Entry 1: [LW R4, 332(R6)]
 Buf3:
 	Entry 0:
 	Entry 1:
@@ -1655,22 +1609,22 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 37:
+Cycle 36:
 
 IF:
 	Waiting: [BGTZ R5, #4]
 	Executed:
 Buf1:
-	Entry 0: [LW R4, 332(R6)]
-	Entry 1: [MULT R3, R4]
-	Entry 2: [MFLO R5]
+	Entry 0: [MULT R3, R4]
+	Entry 1: [MFLO R5]
+	Entry 2:
 	Entry 3:
 	Entry 4:
 	Entry 5:
 	Entry 6:
 	Entry 7:
 Buf2:
-	Entry 0:
+	Entry 0: [LW R4, 332(R6)]
 	Entry 1:
 Buf3:
 	Entry 0:
@@ -1701,145 +1655,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 38:
-
-IF:
-	Waiting: [BGTZ R5, #4]
-	Executed:
-Buf1:
-	Entry 0: [LW R4, 332(R6)]
-	Entry 1: [MULT R3, R4]
-	Entry 2: [MFLO R5]
-	Entry 3:
-	Entry 4:
-	Entry 5:
-	Entry 6:
-	Entry 7:
-Buf2:
-	Entry 0:
-	Entry 1:
-Buf3:
-	Entry 0:
-	Entry 1:
-Buf4:
-	Entry 0:
-	Entry 1:
-Buf5:
-	Entry 0:
-	Entry 1:
-Buf6:
-Buf7:
-Buf8:
-Buf9:
-Buf10: [-2, R3]
-Buf11:
-Buf12:
-
-Registers
-R00:	0	1	3	-2	2	10	4	0
-R08:	0	0	0	0	0	0	0	0
-R16:	0	0	0	0	0	0	0	0
-R24:	0	0	0	0	0	0	0	0
-HI:	0
-LO:	-2
-
-Data
-316:	-1	-2	-3	1	2	4	-4	10
-348:	10	9	1	0	-1	1	-1	0
---------------------
-Cycle 39:
-
-IF:
-	Waiting: [BGTZ R5, #4]
-	Executed:
-Buf1:
-	Entry 0: [LW R4, 332(R6)]
-	Entry 1: [MULT R3, R4]
-	Entry 2: [MFLO R5]
-	Entry 3:
-	Entry 4:
-	Entry 5:
-	Entry 6:
-	Entry 7:
-Buf2:
-	Entry 0:
-	Entry 1:
-Buf3:
-	Entry 0:
-	Entry 1:
-Buf4:
-	Entry 0:
-	Entry 1:
-Buf5:
-	Entry 0:
-	Entry 1:
-Buf6:
-Buf7:
-Buf8:
-Buf9:
-Buf10:
-Buf11:
-Buf12:
-
-Registers
-R00:	0	1	3	-2	2	10	4	0
-R08:	0	0	0	0	0	0	0	0
-R16:	0	0	0	0	0	0	0	0
-R24:	0	0	0	0	0	0	0	0
-HI:	0
-LO:	-2
-
-Data
-316:	-1	-2	-3	1	2	4	-4	10
-348:	10	9	1	0	-1	1	-1	0
---------------------
-Cycle 40:
-
-IF:
-	Waiting: [BGTZ R5, #4]
-	Executed:
-Buf1:
-	Entry 0: [MULT R3, R4]
-	Entry 1: [MFLO R5]
-	Entry 2:
-	Entry 3:
-	Entry 4:
-	Entry 5:
-	Entry 6:
-	Entry 7:
-Buf2:
-	Entry 0: [LW R4, 332(R6)]
-	Entry 1:
-Buf3:
-	Entry 0:
-	Entry 1:
-Buf4:
-	Entry 0:
-	Entry 1:
-Buf5:
-	Entry 0:
-	Entry 1:
-Buf6:
-Buf7:
-Buf8:
-Buf9:
-Buf10:
-Buf11:
-Buf12:
-
-Registers
-R00:	0	1	3	-2	2	10	4	0
-R08:	0	0	0	0	0	0	0	0
-R16:	0	0	0	0	0	0	0	0
-R24:	0	0	0	0	0	0	0	0
-HI:	0
-LO:	-2
-
-Data
-316:	-1	-2	-3	1	2	4	-4	10
-348:	10	9	1	0	-1	1	-1	0
---------------------
-Cycle 41:
+Cycle 37:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -1869,7 +1685,7 @@ Buf6: [LW R4, 332(R6)]
 Buf7:
 Buf8:
 Buf9:
-Buf10:
+Buf10: [-2, R3]
 Buf11:
 Buf12:
 
@@ -1885,7 +1701,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 42:
+Cycle 38:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -1931,7 +1747,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 43:
+Cycle 39:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -1977,7 +1793,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 44:
+Cycle 40:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -2023,7 +1839,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 45:
+Cycle 41:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -2069,7 +1885,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 46:
+Cycle 42:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -2115,7 +1931,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 47:
+Cycle 43:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -2161,7 +1977,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 48:
+Cycle 44:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -2207,7 +2023,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 49:
+Cycle 45:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -2253,7 +2069,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 50:
+Cycle 46:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -2282,7 +2098,7 @@ Buf5:
 Buf6:
 Buf7:
 Buf8:
-Buf9: [0, R5]
+Buf9: [-8, R5]
 Buf10:
 Buf11:
 Buf12:
@@ -2299,7 +2115,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 51:
+Cycle 47:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -2345,11 +2161,57 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 52:
+Cycle 48:
 
 IF:
-	Waiting: 
-	Executed: 
+	Waiting:
+	Executed: [BGTZ R5, #4]
+Buf1:
+	Entry 0:
+	Entry 1:
+	Entry 2:
+	Entry 3:
+	Entry 4:
+	Entry 5:
+	Entry 6:
+	Entry 7:
+Buf2:
+	Entry 0:
+	Entry 1:
+Buf3:
+	Entry 0:
+	Entry 1:
+Buf4:
+	Entry 0:
+	Entry 1:
+Buf5:
+	Entry 0:
+	Entry 1:
+Buf6:
+Buf7:
+Buf8:
+Buf9:
+Buf10:
+Buf11:
+Buf12:
+
+Registers
+R00:	0	1	3	-2	4	-8	4	0
+R08:	0	0	0	0	0	0	0	0
+R16:	0	0	0	0	0	0	0	0
+R24:	0	0	0	0	0	0	0	0
+HI:	0
+LO:	-8
+
+Data
+316:	-1	-2	-3	1	2	4	-4	10
+348:	10	9	1	0	-1	1	-1	0
+--------------------
+Cycle 49:
+
+IF:
+	Waiting:
+	Executed:
 Buf1:
 	Entry 0: [ADDI R5, R5, #12]
 	Entry 1: [SW R5, 348(R6)]
@@ -2391,11 +2253,11 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 53:
+Cycle 50:
 
 IF:
-	Waiting: [J #268]
-	Executed:
+	Waiting:
+	Executed: [J #268]
 Buf1:
 	Entry 0: [SW R5, 348(R6)]
 	Entry 1: [ADDI R6, R6, #4]
@@ -2437,10 +2299,10 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 54:
+Cycle 51:
 
 IF:
-	Waiting: [J #268]
+	Waiting: [BEQ R1, R2, #40]
 	Executed:
 Buf1:
 	Entry 0: [SW R5, 348(R6)]
@@ -2483,10 +2345,10 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 55:
+Cycle 52:
 
 IF:
-	Waiting: [J #268]
+	Waiting: [BEQ R1, R2, #40]
 	Executed:
 Buf1:
 	Entry 0: [SW R5, 348(R6)]
@@ -2529,10 +2391,10 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 56:
+Cycle 53:
 
 IF:
-	Waiting: [J #268]
+	Waiting: [BEQ R1, R2, #40]
 	Executed:
 Buf1:
 	Entry 0: [ADDI R6, R6, #4]
@@ -2575,10 +2437,10 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 57:
+Cycle 54:
 
 IF:
-	Waiting: [J #268]
+	Waiting: [BEQ R1, R2, #40]
 	Executed:
 Buf1:
 	Entry 0: [ADDI R6, R6, #4]
@@ -2621,10 +2483,10 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	9	1	0	-1	1	-1	0
 --------------------
-Cycle 58:
+Cycle 55:
 
 IF:
-	Waiting: [J #268]
+	Waiting: [BEQ R1, R2, #40]
 	Executed:
 Buf1:
 	Entry 0: [ADDI R6, R6, #4]
@@ -2667,10 +2529,10 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 59:
+Cycle 56:
 
 IF:
-	Waiting: [J #268]
+	Waiting: [BEQ R1, R2, #40]
 	Executed:
 Buf1:
 	Entry 0:
@@ -2713,10 +2575,10 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 60:
+Cycle 57:
 
 IF:
-	Waiting: [J #268]
+	Waiting: [BEQ R1, R2, #40]
 	Executed:
 Buf1:
 	Entry 0:
@@ -2759,53 +2621,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 61:
-
-IF:
-	Waiting: [J #268]
-	Executed:
-Buf1:
-	Entry 0:
-	Entry 1:
-	Entry 2:
-	Entry 3:
-	Entry 4:
-	Entry 5:
-	Entry 6:
-	Entry 7:
-Buf2:
-	Entry 0:
-	Entry 1:
-Buf3:
-	Entry 0:
-	Entry 1:
-Buf4:
-	Entry 0:
-	Entry 1:
-Buf5:
-	Entry 0:
-	Entry 1:
-Buf6:
-Buf7:
-Buf8:
-Buf9:
-Buf10:
-Buf11:
-Buf12:
-
-Registers
-R00:	0	2	3	-2	4	4	8	0
-R08:	0	0	0	0	0	0	0	0
-R16:	0	0	0	0	0	0	0	0
-R24:	0	0	0	0	0	0	0	0
-HI:	0
-LO:	-8
-
-Data
-316:	-1	-2	-3	1	2	4	-4	10
-348:	10	4	1	0	-1	1	-1	0
---------------------
-Cycle 62:
+Cycle 58:
 
 IF:
 	Waiting: [BEQ R1, R2, #40]
@@ -2851,11 +2667,57 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 63:
+Cycle 59:
 
 IF:
-	Waiting: 
-	Executed: 
+	Waiting:
+	Executed: [BEQ R1, R2, #40]
+Buf1:
+	Entry 0:
+	Entry 1:
+	Entry 2:
+	Entry 3:
+	Entry 4:
+	Entry 5:
+	Entry 6:
+	Entry 7:
+Buf2:
+	Entry 0:
+	Entry 1:
+Buf3:
+	Entry 0:
+	Entry 1:
+Buf4:
+	Entry 0:
+	Entry 1:
+Buf5:
+	Entry 0:
+	Entry 1:
+Buf6:
+Buf7:
+Buf8:
+Buf9:
+Buf10:
+Buf11:
+Buf12:
+
+Registers
+R00:	0	2	3	-2	4	4	8	0
+R08:	0	0	0	0	0	0	0	0
+R16:	0	0	0	0	0	0	0	0
+R24:	0	0	0	0	0	0	0	0
+HI:	0
+LO:	-8
+
+Data
+316:	-1	-2	-3	1	2	4	-4	10
+348:	10	4	1	0	-1	1	-1	0
+--------------------
+Cycle 60:
+
+IF:
+	Waiting:
+	Executed:
 Buf1:
 	Entry 0: [LW R3, 316(R6)]
 	Entry 1: [LW R4, 332(R6)]
@@ -2897,15 +2759,15 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 64:
+Cycle 61:
 
 IF:
 	Waiting: [BGTZ R5, #4]
 	Executed:
 Buf1:
-	Entry 0: [LW R4, 332(R6)]
-	Entry 1: [MULT R3, R4]
-	Entry 2: [MFLO R5]
+	Entry 0: [MULT R3, R4]
+	Entry 1: [MFLO R5]
+	Entry 2:
 	Entry 3:
 	Entry 4:
 	Entry 5:
@@ -2913,7 +2775,7 @@ Buf1:
 	Entry 7:
 Buf2:
 	Entry 0: [LW R3, 316(R6)]
-	Entry 1:
+	Entry 1: [LW R4, 332(R6)]
 Buf3:
 	Entry 0:
 	Entry 1:
@@ -2943,22 +2805,22 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 65:
+Cycle 62:
 
 IF:
 	Waiting: [BGTZ R5, #4]
 	Executed:
 Buf1:
-	Entry 0: [LW R4, 332(R6)]
-	Entry 1: [MULT R3, R4]
-	Entry 2: [MFLO R5]
+	Entry 0: [MULT R3, R4]
+	Entry 1: [MFLO R5]
+	Entry 2:
 	Entry 3:
 	Entry 4:
 	Entry 5:
 	Entry 6:
 	Entry 7:
 Buf2:
-	Entry 0:
+	Entry 0: [LW R4, 332(R6)]
 	Entry 1:
 Buf3:
 	Entry 0:
@@ -2989,145 +2851,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 66:
-
-IF:
-	Waiting: [BGTZ R5, #4]
-	Executed:
-Buf1:
-	Entry 0: [LW R4, 332(R6)]
-	Entry 1: [MULT R3, R4]
-	Entry 2: [MFLO R5]
-	Entry 3:
-	Entry 4:
-	Entry 5:
-	Entry 6:
-	Entry 7:
-Buf2:
-	Entry 0:
-	Entry 1:
-Buf3:
-	Entry 0:
-	Entry 1:
-Buf4:
-	Entry 0:
-	Entry 1:
-Buf5:
-	Entry 0:
-	Entry 1:
-Buf6:
-Buf7:
-Buf8:
-Buf9:
-Buf10: [-3, R3]
-Buf11:
-Buf12:
-
-Registers
-R00:	0	2	3	-3	4	4	8	0
-R08:	0	0	0	0	0	0	0	0
-R16:	0	0	0	0	0	0	0	0
-R24:	0	0	0	0	0	0	0	0
-HI:	0
-LO:	-8
-
-Data
-316:	-1	-2	-3	1	2	4	-4	10
-348:	10	4	1	0	-1	1	-1	0
---------------------
-Cycle 67:
-
-IF:
-	Waiting: [BGTZ R5, #4]
-	Executed:
-Buf1:
-	Entry 0: [LW R4, 332(R6)]
-	Entry 1: [MULT R3, R4]
-	Entry 2: [MFLO R5]
-	Entry 3:
-	Entry 4:
-	Entry 5:
-	Entry 6:
-	Entry 7:
-Buf2:
-	Entry 0:
-	Entry 1:
-Buf3:
-	Entry 0:
-	Entry 1:
-Buf4:
-	Entry 0:
-	Entry 1:
-Buf5:
-	Entry 0:
-	Entry 1:
-Buf6:
-Buf7:
-Buf8:
-Buf9:
-Buf10:
-Buf11:
-Buf12:
-
-Registers
-R00:	0	2	3	-3	4	4	8	0
-R08:	0	0	0	0	0	0	0	0
-R16:	0	0	0	0	0	0	0	0
-R24:	0	0	0	0	0	0	0	0
-HI:	0
-LO:	-8
-
-Data
-316:	-1	-2	-3	1	2	4	-4	10
-348:	10	4	1	0	-1	1	-1	0
---------------------
-Cycle 68:
-
-IF:
-	Waiting: [BGTZ R5, #4]
-	Executed:
-Buf1:
-	Entry 0: [MULT R3, R4]
-	Entry 1: [MFLO R5]
-	Entry 2:
-	Entry 3:
-	Entry 4:
-	Entry 5:
-	Entry 6:
-	Entry 7:
-Buf2:
-	Entry 0: [LW R4, 332(R6)]
-	Entry 1:
-Buf3:
-	Entry 0:
-	Entry 1:
-Buf4:
-	Entry 0:
-	Entry 1:
-Buf5:
-	Entry 0:
-	Entry 1:
-Buf6:
-Buf7:
-Buf8:
-Buf9:
-Buf10:
-Buf11:
-Buf12:
-
-Registers
-R00:	0	2	3	-3	4	4	8	0
-R08:	0	0	0	0	0	0	0	0
-R16:	0	0	0	0	0	0	0	0
-R24:	0	0	0	0	0	0	0	0
-HI:	0
-LO:	-8
-
-Data
-316:	-1	-2	-3	1	2	4	-4	10
-348:	10	4	1	0	-1	1	-1	0
---------------------
-Cycle 69:
+Cycle 63:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -3157,7 +2881,7 @@ Buf6: [LW R4, 332(R6)]
 Buf7:
 Buf8:
 Buf9:
-Buf10:
+Buf10: [-3, R3]
 Buf11:
 Buf12:
 
@@ -3173,7 +2897,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 70:
+Cycle 64:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -3219,7 +2943,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 71:
+Cycle 65:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -3265,7 +2989,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 72:
+Cycle 66:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -3311,7 +3035,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 73:
+Cycle 67:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -3357,7 +3081,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 74:
+Cycle 68:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -3403,7 +3127,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 75:
+Cycle 69:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -3449,7 +3173,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 76:
+Cycle 70:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -3495,7 +3219,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 77:
+Cycle 71:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -3541,7 +3265,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 78:
+Cycle 72:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -3570,7 +3294,7 @@ Buf5:
 Buf6:
 Buf7:
 Buf8:
-Buf9: [0, R5]
+Buf9: [12, R5]
 Buf10:
 Buf11:
 Buf12:
@@ -3587,7 +3311,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 79:
+Cycle 73:
 
 IF:
 	Waiting: [BGTZ R5, #4]
@@ -3633,11 +3357,57 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 80:
+Cycle 74:
 
 IF:
-	Waiting: [J #268]
-	Executed:
+	Waiting:
+	Executed: [BGTZ R5, #4]
+Buf1:
+	Entry 0:
+	Entry 1:
+	Entry 2:
+	Entry 3:
+	Entry 4:
+	Entry 5:
+	Entry 6:
+	Entry 7:
+Buf2:
+	Entry 0:
+	Entry 1:
+Buf3:
+	Entry 0:
+	Entry 1:
+Buf4:
+	Entry 0:
+	Entry 1:
+Buf5:
+	Entry 0:
+	Entry 1:
+Buf6:
+Buf7:
+Buf8:
+Buf9:
+Buf10:
+Buf11:
+Buf12:
+
+Registers
+R00:	0	2	3	-3	-4	12	8	0
+R08:	0	0	0	0	0	0	0	0
+R16:	0	0	0	0	0	0	0	0
+R24:	0	0	0	0	0	0	0	0
+HI:	0
+LO:	12
+
+Data
+316:	-1	-2	-3	1	2	4	-4	10
+348:	10	4	1	0	-1	1	-1	0
+--------------------
+Cycle 75:
+
+IF:
+	Waiting:
+	Executed: [J #268]
 Buf1:
 	Entry 0: [SW R5, 348(R6)]
 	Entry 1: [ADDI R1, R1, #1]
@@ -3679,10 +3449,10 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 81:
+Cycle 76:
 
 IF:
-	Waiting: [J #268]
+	Waiting: [BEQ R1, R2, #40]
 	Executed:
 Buf1:
 	Entry 0: [ADDI R6, R6, #4]
@@ -3725,10 +3495,10 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 82:
+Cycle 77:
 
 IF:
-	Waiting: [J #268]
+	Waiting: [BEQ R1, R2, #40]
 	Executed:
 Buf1:
 	Entry 0: [ADDI R6, R6, #4]
@@ -3771,10 +3541,10 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	1	0	-1	1	-1	0
 --------------------
-Cycle 83:
+Cycle 78:
 
 IF:
-	Waiting: [J #268]
+	Waiting: [BEQ R1, R2, #40]
 	Executed:
 Buf1:
 	Entry 0: [ADDI R6, R6, #4]
@@ -3817,10 +3587,10 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	12	0	-1	1	-1	0
 --------------------
-Cycle 84:
+Cycle 79:
 
 IF:
-	Waiting: [J #268]
+	Waiting: [BEQ R1, R2, #40]
 	Executed:
 Buf1:
 	Entry 0:
@@ -3863,10 +3633,10 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	12	0	-1	1	-1	0
 --------------------
-Cycle 85:
+Cycle 80:
 
 IF:
-	Waiting: [J #268]
+	Waiting: [BEQ R1, R2, #40]
 	Executed:
 Buf1:
 	Entry 0:
@@ -3909,53 +3679,7 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	12	0	-1	1	-1	0
 --------------------
-Cycle 86:
-
-IF:
-	Waiting: [J #268]
-	Executed:
-Buf1:
-	Entry 0:
-	Entry 1:
-	Entry 2:
-	Entry 3:
-	Entry 4:
-	Entry 5:
-	Entry 6:
-	Entry 7:
-Buf2:
-	Entry 0:
-	Entry 1:
-Buf3:
-	Entry 0:
-	Entry 1:
-Buf4:
-	Entry 0:
-	Entry 1:
-Buf5:
-	Entry 0:
-	Entry 1:
-Buf6:
-Buf7:
-Buf8:
-Buf9:
-Buf10:
-Buf11:
-Buf12:
-
-Registers
-R00:	0	3	3	-3	-4	12	12	0
-R08:	0	0	0	0	0	0	0	0
-R16:	0	0	0	0	0	0	0	0
-R24:	0	0	0	0	0	0	0	0
-HI:	0
-LO:	12
-
-Data
-316:	-1	-2	-3	1	2	4	-4	10
-348:	10	4	12	0	-1	1	-1	0
---------------------
-Cycle 87:
+Cycle 81:
 
 IF:
 	Waiting: [BEQ R1, R2, #40]
@@ -4001,11 +3725,57 @@ Data
 316:	-1	-2	-3	1	2	4	-4	10
 348:	10	4	12	0	-1	1	-1	0
 --------------------
-Cycle 88:
+Cycle 82:
 
 IF:
-	Waiting: 
-	Executed: [BREAK]
+	Waiting:
+	Executed: [BEQ R1, R2, #40]
+Buf1:
+	Entry 0:
+	Entry 1:
+	Entry 2:
+	Entry 3:
+	Entry 4:
+	Entry 5:
+	Entry 6:
+	Entry 7:
+Buf2:
+	Entry 0:
+	Entry 1:
+Buf3:
+	Entry 0:
+	Entry 1:
+Buf4:
+	Entry 0:
+	Entry 1:
+Buf5:
+	Entry 0:
+	Entry 1:
+Buf6:
+Buf7:
+Buf8:
+Buf9:
+Buf10:
+Buf11:
+Buf12:
+
+Registers
+R00:	0	3	3	-3	-4	12	12	0
+R08:	0	0	0	0	0	0	0	0
+R16:	0	0	0	0	0	0	0	0
+R24:	0	0	0	0	0	0	0	0
+HI:	0
+LO:	12
+
+Data
+316:	-1	-2	-3	1	2	4	-4	10
+348:	10	4	12	0	-1	1	-1	0
+--------------------
+Cycle 83:
+
+IF:
+	Waiting:
+	Executed:
 Buf1:
 	Entry 0:
 	Entry 1:

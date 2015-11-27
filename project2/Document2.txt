@@ -1,0 +1,3 @@
+Store -- DataMap: 348	offset 6	0	Reg 5	RegVal 10
+Store -- DataMap: 352	offset 6	4	Reg 5	RegVal 4
+Store -- DataMap: 356	offset 6	8	Reg 5	RegVal 12

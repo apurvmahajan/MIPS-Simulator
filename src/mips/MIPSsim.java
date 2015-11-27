@@ -15,7 +15,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -24,7 +23,10 @@ import java.util.Iterator;
 public class MIPSsim {
 	private static int LO = 0;
 	private static int HI = 0;
-	
+	private static boolean loUsed = false;
+	private static boolean hiUsed = false;
+	private static boolean mulIssued = false;
+	private static boolean divIssued = false;
 	private static boolean ifWait = false;			//True = Waiting || False = Executed
 	private static String instrFetch = null;
 	
@@ -41,12 +43,13 @@ public class MIPSsim {
 	private static String buf10 = null;
 	private static String buf11 = null;
 	private static String buf12 = null;
-	
+	private static String divInstr = null;
 	//private static boolean[] clearBuf = new boolean[13];
 	
 	private static ArrayList<String> writeBack = new ArrayList<String>(8);
 	private static HashSet<Integer> regWrite = new HashSet<Integer>();
 	private static HashSet<Integer> regRead = new HashSet<Integer>();
+	private static HashSet<Integer> regOrder = new HashSet<Integer>();
 
 	private static boolean instrFlag = true;
 	private static int cycle = 0;
@@ -76,14 +79,20 @@ public class MIPSsim {
 			br = new BufferedReader(new FileReader(currentDirectory + "/" + fileName));
 			FileWriter fw1 = new FileWriter(disassemblyFile.getAbsoluteFile());
 			BufferedWriter bw1 = new BufferedWriter(fw1);
+			
 			//********* Save data and instructions in HashMap *********
+			
 			int posCntr = 256;
 			while((nextInstr = br.readLine()) != null){
 				hm.put(posCntr, nextInstr);
 				posCntr += 4;
 			}
 			posCntr = 256;
+			
+			
 			//********* Disassemble the input file (for disassembly.txt output) *********
+			
+			
 			while(hm.containsKey(posCntr)){
 				nextInstr = hm.get(posCntr);
 				if(instrFlag){
@@ -104,17 +113,28 @@ public class MIPSsim {
 				posCntr += 4;
 			}
 			bw1.close();
+			
+			
 			//********* Simulate instruction execution (for simulation.txt output) *********
+			
+			
 			int divCount = 0;
 			int ifCount = 0;
 			FileWriter fw2 = new FileWriter(simulationFile.getAbsoluteFile());
 			BufferedWriter bw2 = new BufferedWriter(fw2);
 			nextPosCntr = posCntr = 256;
+			
 			//**************** Start Execution Cycle ****************
+			
 			while(nextPosCntr < dataCntr){
+				boolean bufFull2 = false;
+				boolean bufFull3 = false;
+				boolean bufFull4 = false;
+				boolean bufFull5 = false;
+				regOrder.clear();
 				if(buf12 != null){
 					writeBack.add(buf12);
-					//executeInstruction(buf12, true);
+					loUsed = false;
 					buf12 = null;
 				}
 				if(buf11 != null){
@@ -123,12 +143,10 @@ public class MIPSsim {
 				}
 				if(buf10 != null){
 					writeBack.add(buf10);
-					//executeInstruction(buf10, true);
 					buf10 = null;						
 				}
 				if(buf9 != null){
 					writeBack.add(buf9);
-					//executeInstruction(buf9, true);
 					buf9 = null;					
 				}
 				if(buf8 != null){
@@ -136,33 +154,48 @@ public class MIPSsim {
 					buf8 = null;						
 				}
 				if(buf7 != null){
+					writeBack.add(buf7);
+					buf7 = null;						
+				}
+				if(divInstr != null){
 					divCount++;
 					if(divCount == 4){
-						writeBack.add(buf12);
-						//executeInstruction(buf7, true);
-						buf7 = null;							
+						buf7 = divInstr;
+						divInstr = null;
 					}
 				}
 				if(buf6 != null){
-					buf10 = buf6;
+					if(buf6.substring(0, 6).equals("000100")){
+						writeBack.add(buf6);
+					}
+					else{
+						buf10 = buf6;
+					}
 					buf6 = null;						
 				}
 				if(!buf5.isEmpty()){
+					if(buf5.size() == 2)
+						bufFull5 = true;
 					buf9 = buf5.get(0);
 					buf5.remove(0);			
 				}
 				if(!buf4.isEmpty()){
+					if(buf4.size() == 2)
+						bufFull4 = true;
 					buf8 = buf4.get(0);
 					buf4.remove(0);
 				}				
-				if(!buf3.isEmpty()){
-					if(buf7 == null){
-						divCount = 0;
-						buf7 = buf3.get(0);
-						buf3.remove(0);
-					}
+				if(!buf3.isEmpty() && divInstr == null){
+					if(buf3.size() == 2)
+						bufFull3 = true;
+					divInstr = buf3.get(0);
+					divCount = 0;
+					buf3.remove(0);
+					loUsed = false;
 				}
 				if(!buf2.isEmpty()){
+					if(buf2.size() == 2)
+						bufFull2 = true;
 					buf6 = buf2.get(0);
 					buf2.remove(0);					
 				}
@@ -171,42 +204,42 @@ public class MIPSsim {
 					while (it.hasNext()) {
 						String bufInstr = it.next();
 						String instrType = bufInstr.substring(0, 6);
-						/*if (!bufInstr.substring(0, 4).equals("0000") && !executeInstruction(nextInstr, false))
-							break;*/
 						if(instrType.equals("000100") || instrType.equals("000101")){
-							//if(buf2.size() < 2 && flag2 == false){
-							if(buf2.size() < 2){
-								//flag2 = true;
+							// ALU2 Unit
+							if(!bufFull2 && buf2.size() < 2 && executeInstruction(bufInstr, false)){
 								buf2.add(bufInstr);
 								it.remove();
 							}
 						}
 						else if(instrType.equals("011001")){
-							if(buf3.size() < 2){
+							// Div Instruction
+							if(!bufFull3 && buf3.size() < 2 && loUsed == false && executeInstruction(bufInstr, false)){
+								loUsed = true;
 								buf3.add(bufInstr);
-								//flag3 = true;
 								it.remove();
 							}
 						}
 						else if(instrType.equals("011000")){
-							if(buf4.size() < 2){
+							// Mult Instruction
+							mulIssued = true;
+							if(!bufFull4 && buf4.size() < 2 && loUsed == false && executeInstruction(bufInstr, false)){
+								loUsed = true;
 								buf4.add(bufInstr);
-								//flag4 = true;
 								it.remove();
 							}
 						}
 						else {
-							if(buf5.size() < 2){
+							// ALU1 Unit
+							if(!bufFull5 && buf5.size() < 2 && executeInstruction(bufInstr, false)){
 								buf5.add(bufInstr);
-								//flag5 = true;
 								it.remove();
 							}							
 						}
 					}
 				}
-				if(instrFetch != null && regRead.size() == 0 && regWrite.size() == 0){
+				if(ifWait == true && regRead.size() == 0 && regWrite.size() == 0){
 					posCntr = processCategoryJumps(posCntr, instrFetch);
-					System.out.println("Category Jump=>> " + instrFetch + "\tposCntr: " + posCntr + "\tnextPosCntr: " + nextPosCntr);
+					//System.out.println("Category Jump:: " + instrFetch + "\tposCntr: " + posCntr + "\tnextPosCntr: " + nextPosCntr);
 					if(posCntr == -1){
 						posCntr = nextPosCntr;
 						ifWait = true;	
@@ -227,6 +260,7 @@ public class MIPSsim {
 					nextInstr = hm.get(posCntr);
 					System.out.println(posCntr + "\t\t" + nextInstr + "\t\t" + disassembleInstruction(nextInstr));
 					if(nextInstr.compareTo("00011000000000000000000000000000") == 0){
+						instrFetch = nextInstr;
 						nextPosCntr = dataCntr;
 						break;
 					}
@@ -236,7 +270,6 @@ public class MIPSsim {
 						break;
 					}
 					buf1.add(nextInstr);
-					executeInstruction(nextInstr, false);
 					ifCount++;
 					if (posCntr == nextPosCntr) 
 						nextPosCntr += 4;
@@ -246,10 +279,11 @@ public class MIPSsim {
 					while(wb.hasNext()){
 						String s = wb.next();
 						executeInstruction(s, true);
+						wb.remove();
 					}
 				}
 				//**************** End Execution Cycle ****************
-				System.out.println(posCntr + "\t\t" + nextInstr + "\t\t" + disassembleInstruction(nextInstr));
+				//System.out.println(posCntr + "\t\t" + nextInstr + "\t\t" + disassembleInstruction(nextInstr));
 				printSimulationState(bw2);
 			}
 			bw2.close();
@@ -269,8 +303,9 @@ public class MIPSsim {
 		// END of main function
 	}	
 
-
-private static boolean executeInstruction(String nextInstr, boolean execute) {
+	
+//****************************** Execute Instructions ******************************
+	private static boolean executeInstruction(String nextInstr, boolean execute) {
 		// TODO Auto-generated method stub
 		String instrCategory = nextInstr.substring(0, 3);
 		switch (instrCategory) {
@@ -292,7 +327,6 @@ private static boolean executeInstruction(String nextInstr, boolean execute) {
 	}
 
 
-	
 //****************************** Category Jumps ******************************
 	private static int processCategoryJumps(int posCntr, String mipsInstr) {
 		// Format of Instructions in Category-1
@@ -350,29 +384,42 @@ private static boolean executeInstruction(String nextInstr, boolean execute) {
 			case "100":
 				// SW
 				if (execute){
+					System.out.println("Store -- DataMap: " + ((offset >> 2) + regArr[src1]) + "\toffset " + src1 + "\t" + regArr[src1] + "\tReg " + src2 + "\tRegVal " + regArr[src2]);
 					dataMap.put((offset >> 2) + regArr[src1], regArr[src2]);
+					regRead.remove(src1);
+					regRead.remove(src2);
+					regOrder.remove(src1);
+					regOrder.remove(src2);
 				}
 				else {
+					regOrder.add(src1);
+					regOrder.add(src2);
 					if (regWrite.contains(src1) || regWrite.contains(src2))
 						return false;
+					regRead.add(src1);
+					regRead.add(src2);
 				}
 				break;
 			case "101":
 				// LW
 				if (execute){
 					regArr[src2] = dataMap.get((offset >> 2)+ regArr[src1]);
+					//System.out.println("Load:: "+ mipsInstr + "\t" + src2 + "\t" + regArr[src2] + "\t" + ((offset >> 2) + regArr[src1]));
+					regRead.remove(src1);
 					regWrite.remove(src2);
 				}
 				else {
-					if (regWrite.contains(src1) || regWrite.contains(src2))
+					if (regRead.contains(src2) || regRead.contains(src1) || regWrite.contains(src2))
 						return false;
+					regRead.add(src1);
 					regWrite.add(src2);
-				}
+					}
 				break;
 		}
 		return true;
 	}
 
+	
 //****************************** Category Two ******************************
 	private static boolean processCategoryTwo(String mipsInstr, boolean execute) {
 		// Format of Instructions in Category-2
@@ -483,6 +530,7 @@ private static boolean executeInstruction(String nextInstr, boolean execute) {
 		return true;
 	}
 
+	
 //****************************** Category Three ******************************
 	private static boolean processCategoryThree(String mipsInstr, boolean execute) {
 		// Format of Instructions in Category-3
@@ -499,8 +547,9 @@ private static boolean executeInstruction(String nextInstr, boolean execute) {
 					regWrite.remove(dest);
 				}
 				else {
-					if (regWrite.contains(src1) ||
-							regWrite.contains(dest) || regRead.contains(dest))
+					if(regOrder.contains(src1) || regOrder.contains(dest))
+						return false;
+					if (regWrite.contains(src1) || regWrite.contains(dest) || regRead.contains(dest))
 						return false;
 					regRead.add(src1);
 					regWrite.add(dest);
@@ -540,6 +589,7 @@ private static boolean executeInstruction(String nextInstr, boolean execute) {
 		return true;
 	}
 
+	
 //****************************** Category Four ******************************
 	private static boolean processCategoryFour(String mipsInstr, boolean execute) {
 		// Format of Instructions in Category-4
@@ -555,10 +605,13 @@ private static boolean executeInstruction(String nextInstr, boolean execute) {
 					LO = regArr[src1] * regArr[src2];
 					regRead.remove(src1);
 					regRead.remove(src2);
+					loUsed = false;
+					mulIssued = false;
 				}
 				else {
-					if (regWrite.contains(src1) || regWrite.contains(src2))
+					if (regWrite.contains(src1) || regWrite.contains(src2) || loUsed == true)
 						return false;
+					loUsed = true;
 					regRead.add(src1);
 					regRead.add(src2);
 				}
@@ -570,10 +623,14 @@ private static boolean executeInstruction(String nextInstr, boolean execute) {
 					HI = regArr[src1] % regArr[src2];
 					regRead.remove(src1);
 					regRead.remove(src2);
+					loUsed = false;
+					hiUsed = false;
 				}
 				else {
-					if (regWrite.contains(src1) || regWrite.contains(src2))
+					if (regWrite.contains(src1) || regWrite.contains(src2) || loUsed == true || hiUsed == true)
 						return false;
+					loUsed = true;
+					hiUsed = true;
 					regRead.add(src1);
 					regRead.add(src2);
 				}
@@ -582,6 +639,8 @@ private static boolean executeInstruction(String nextInstr, boolean execute) {
 		return true;
 	}
 
+	
+//****************************** Category Five ******************************
 //****************************** Category Five ******************************	
 	private static boolean processCategoryFive(String mipsInstr, boolean execute) {
 		// Format of Instructions in Category-5
@@ -592,26 +651,31 @@ private static boolean executeInstruction(String nextInstr, boolean execute) {
 				//MFHI
 				if (execute){
 					regArr[dest] = HI; 
-					HI = -1;
+					//HI = 0;
+					hiUsed = false;
 					regWrite.remove(dest);
 				}
 				else {
-					if (regRead.contains(dest) || regWrite.contains(dest))
+					if (regRead.contains(dest) || regWrite.contains(dest) || hiUsed == true)
 						return false;
 					regWrite.add(dest);
+					hiUsed = true;
 				}
 				break;
 			case "001":
 				//MFLO
 				if (execute){
+					//System.out.println("MFLO:: "+ mipsInstr + "\t" + dest + "\tLO Value: " + LO);
 					regArr[dest] = LO; 
-					LO = -1;
+					//LO = 0;
+					loUsed = false;
 					regWrite.remove(dest);
 				}
 				else {
-					if (regRead.contains(dest) || regWrite.contains(dest))
+					if (regRead.contains(dest) || regWrite.contains(dest) || loUsed == true || mulIssued == true)
 						return false;
 					regWrite.add(dest);
+					loUsed = true;
 				}
 				break;
 		}
@@ -620,10 +684,13 @@ private static boolean executeInstruction(String nextInstr, boolean execute) {
 
 
 //****************************** Print the simulation.txt output file *******************************
+	
+	
+//****************************** Print Simulation State ******************************
 	private static void printSimulationState(BufferedWriter bw) {
 		cycle++;
-		if(cycle > 100)
-			System.exit(0);
+		//if(cycle > 100)
+		//	System.exit(0);
 		//System.out.println("Cycle:  " + cycle);
 		try {
 			bw.write("--------------------");
@@ -631,7 +698,7 @@ private static boolean executeInstruction(String nextInstr, boolean execute) {
 			bw.write("\n\nIF:");
 			if(ifWait){
 				bw.write("\n\tWaiting: [" + disassembleInstruction(instrFetch) + "]");				
-				bw.write("\n\tExecuted: ");
+				bw.write("\n\tExecuted:");
 			}
 			else {
 				bw.write("\n\tWaiting: ");
@@ -649,7 +716,7 @@ private static boolean executeInstruction(String nextInstr, boolean execute) {
 				bw.write("\n\tEntry " + loop + ": [" + disassembleInstruction(buf1.get(loop)) + "]");
 			}
 			while(loop<8){
-				bw.write("\n\tEntry " + loop++ + ": ");
+				bw.write("\n\tEntry " + loop++ + ":");
 			}
 			//******************************
 			bw.write("\nBuf2:");
@@ -657,7 +724,7 @@ private static boolean executeInstruction(String nextInstr, boolean execute) {
 				bw.write("\n\tEntry " + loop + ": [" + disassembleInstruction(buf2.get(loop)) + "]");
 			}
 			while(loop<2){
-				bw.write("\n\tEntry " + loop++ + ": ");
+				bw.write("\n\tEntry " + loop++ + ":");
 			}
 			//******************************
 			bw.write("\nBuf3:");
@@ -666,7 +733,7 @@ private static boolean executeInstruction(String nextInstr, boolean execute) {
 				bw.write("\n\tEntry " + loop + ": [" + disassembleInstruction(buf3.get(loop)) + "]");
 			}
 			while(loop<2){
-				bw.write("\n\tEntry " + loop++ + ": ");
+				bw.write("\n\tEntry " + loop++ + ":");
 			}
 			//******************************
 			bw.write("\nBuf4:");
@@ -674,7 +741,7 @@ private static boolean executeInstruction(String nextInstr, boolean execute) {
 				bw.write("\n\tEntry " + loop + ": [" + disassembleInstruction(buf4.get(loop)) + "]");
 			}
 			while(loop<2){
-				bw.write("\n\tEntry " + loop++ + ": ");
+				bw.write("\n\tEntry " + loop++ + ":");
 			}
 			//******************************
 			bw.write("\nBuf5:");
@@ -682,29 +749,45 @@ private static boolean executeInstruction(String nextInstr, boolean execute) {
 				bw.write("\n\tEntry " + loop + ": [" + disassembleInstruction(buf5.get(loop)) + "]");
 			}
 			while(loop<2){
-				bw.write("\n\tEntry " + loop++ + ": ");
+				bw.write("\n\tEntry " + loop++ + ":");
 			}
-			bw.write("\nBuf6: ");
+			bw.write("\nBuf6:");
 			if(buf6 != null)
-				bw.write("[" + disassembleInstruction(buf6) + "]");
-			bw.write("\nBuf7: ");
-			if(buf7 != null)
-				bw.write("[" + disassembleInstruction(buf7) + "]");
-			bw.write("\nBuf8: ");
+				bw.write(" [" + disassembleInstruction(buf6) + "]");
+			bw.write("\nBuf7:");
+			if(buf7 != null){
+				int src1 = Integer.parseInt(buf12.substring(6, 11), 2);
+				int src2 = Integer.parseInt(buf12.substring(11, 16), 2);
+				bw.write(" [" + (regArr[src1] % regArr[src2]) + ", " + (regArr[src1] / regArr[src2]) + "]");
+			}
+				
+			bw.write("\nBuf8:");
 			if(buf8 != null)
-				bw.write("[" + disassembleInstruction(buf8) + "]");
-			bw.write("\nBuf9: ");
-			if(buf9 != null)
-				bw.write("[" + disassembleInstruction(buf9) + "]");
-			bw.write("\nBuf10: ");
-			if(buf10 != null)
-				bw.write("[" + disassembleInstruction(buf10) + "]");
-			bw.write("\nBuf11: ");
+				bw.write(" [" + disassembleInstruction(buf8) + "]");
+			bw.write("\nBuf9:");
+			if(buf9 != null){
+				bw.write(" [" + printBuf9(buf9) + "]");
+			}
+				
+			bw.write("\nBuf10:");
+			if(buf10 != null){
+				String bits = buf10.substring(6);
+				int src1 = Integer.parseInt(bits.substring(0, 5), 2);
+				int src2 = Integer.parseInt(bits.substring(5, 10), 2);
+				int offset = Integer.parseInt(bits.substring(10), 2) << 2;
+				regArr[src2] = dataMap.get((offset >> 2)+ regArr[src1]);
+				bw.write(" [" + dataMap.get((offset >> 2)+ regArr[src1])+ ", R" + src2 + "]");
+			}
+				
+			bw.write("\nBuf11:");
 			if(buf11 != null)
-				bw.write("[" + disassembleInstruction(buf11) + "]");
-			bw.write("\nBuf12: ");
-			if(buf12 != null)
-				bw.write("[" + disassembleInstruction(buf12) + "]");
+				bw.write(" [" + disassembleInstruction(buf11) + "]");
+			bw.write("\nBuf12:");
+			if(buf12 != null){
+				int src1 = Integer.parseInt(buf12.substring(6, 11), 2);
+				int src2 = Integer.parseInt(buf12.substring(11, 16), 2);
+				bw.write(" [" + (regArr[src1] * regArr[src2]) + "]");
+			}
 			bw.write("\n\nRegisters");
 			for(int i=0; i<32; i++){
 				if (i%8 == 0){
@@ -726,10 +809,10 @@ private static boolean executeInstruction(String nextInstr, boolean execute) {
 				bw.write("\t" + dataMap.get(dataReg));
 				dataReg += 4;
 			}
-			bw.write("\nRead : ");	
-			bw.write(regRead.toString());
-			bw.write("\nWrite: ");
-			bw.write(regWrite.toString());
+			//bw.write("\nRead : ");	
+			//bw.write(regRead.toString());
+			//bw.write("\nWrite: ");
+			//bw.write(regWrite.toString());
 			bw.write("\n");
 		}
 		catch (IOException e){
@@ -737,6 +820,83 @@ private static boolean executeInstruction(String nextInstr, boolean execute) {
 		}
 	}	
 	
+	
+//****************************** Print Buffer 9 State ******************************
+	private static String printBuf9(String buf9) {
+		String result = "";
+		if(buf9.substring(0, 3).equals("001")){
+			String opCode = buf9.substring(3, 6);
+			int dest = Integer.parseInt(buf9.substring(6, 11), 2);
+			int src1 = Integer.parseInt(buf9.substring(11, 16), 2);
+			int src2 = Integer.parseInt(buf9.substring(16, 21), 2);
+			switch (opCode) {
+				case "000":
+					//ADD
+					result += (regArr[src1] + regArr[src2]);
+					break;
+				case "001":
+					//SUB
+					result += (regArr[src1] - regArr[src2]);
+					break;
+				case "010":
+					//AND
+					result += (regArr[src1] & regArr[src2]);
+					break;
+				case "011":
+					//OR
+					result += (regArr[src1] | regArr[src2]);
+					break;
+				case "100":
+					//SRL
+					result += (regArr[src1] >>> 2);
+					break;
+				case "101":
+					//SRA
+					result += (regArr[src1] >> 2);
+					break;
+			}
+			result += ", R" + dest;
+		}
+		else if(buf9.substring(0, 3).equals("010")) {
+			String opCode = buf9.substring(3, 6);
+			int dest = Integer.parseInt(buf9.substring(6, 11), 2);
+			int src1 = Integer.parseInt(buf9.substring(11, 16), 2);
+			int data = Integer.parseInt(buf9.substring(16), 2);
+			switch (opCode) {
+				case "000":
+					//ADDI
+					result += (regArr[src1] + data);
+					break;
+				case "001":
+					//ANDI
+					result += (regArr[src1] & data);
+					break;
+				case "010":
+					//ORI
+					result += (regArr[src1] | data);
+					break;
+			}
+			result += ", R" + dest;			
+		}
+		else {
+			String opCode = buf9.substring(3, 6);
+			int dest = Integer.parseInt(buf9.substring(6, 11), 2);
+			switch (opCode) {
+				case "000":
+					//MFHI
+					result += (LO);
+					break;
+				case "001":
+					//MFLO
+					result += (HI);
+					break;
+			}
+			result += ", R" + dest;
+		}
+		return result;
+	}
+
+
 //****************************** Print the disassembly.txt output file ******************************
 	private static String disassembleInstruction(String mipsInstr) {
 		String instrCategory = mipsInstr.substring(0, 3);
